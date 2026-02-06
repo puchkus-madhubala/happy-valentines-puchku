@@ -1,6 +1,6 @@
-// src/data/valentinesData.js
+import { ValentineDay, AuthConfig } from "../types";
 
-export const valentinesData = [
+export const valentinesData: ValentineDay[] = [
   {
     id: 1,
     name: "Rose Day",
@@ -119,7 +119,7 @@ export const valentinesData = [
   },
 ];
 
-export const authConfig = {
+export const authConfig: AuthConfig = {
   username: "dosawithwhitechutney",
   secretAnswer: "12/04/2025",
   secretQuestion: "When did we first start talking?",
