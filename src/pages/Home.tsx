@@ -1,15 +1,36 @@
 import React from "react";
 import { motion } from "motion/react";
 import { LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { valentinesData } from "../data/valentinesData";
 
 const Home: React.FC = () => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
   const currentDate = new Date();
 
   const isDayUnlocked = (dayDate: string): boolean => {
-    return currentDate >= new Date(dayDate);
+    const today = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate(),
+    );
+    const unlockDate = new Date(dayDate);
+    const unlockDay = new Date(
+      unlockDate.getFullYear(),
+      unlockDate.getMonth(),
+      unlockDate.getDate(),
+    );
+    return today >= unlockDay;
+  };
+
+  const handleDayClick = (day: (typeof valentinesData)[0]) => {
+    if (!isDayUnlocked(day.date)) return;
+
+    if (day.name === "Rose Day") {
+      navigate("/rose-day");
+    }
   };
 
   return (
@@ -61,6 +82,7 @@ const Home: React.FC = () => {
                   damping: 15,
                 }}
                 whileHover={isUnlocked ? { scale: 1.05 } : {}}
+                onClick={() => handleDayClick(day)}
                 className={`relative p-6 rounded-3xl shadow-lg cursor-pointer ${
                   isUnlocked
                     ? "bg-white hover:shadow-xl transition-shadow"
@@ -84,7 +106,15 @@ const Home: React.FC = () => {
                 )}
 
                 <div className="text-center">
-                  <span className="text-5xl mb-4 block">{day.icon}</span>
+                  {day.icon.startsWith("/") ? (
+                    <img
+                      src={day.icon}
+                      alt={day.name}
+                      className="w-16 h-16 mx-auto mb-4 object-contain"
+                    />
+                  ) : (
+                    <span className="text-5xl mb-4 block">{day.icon}</span>
+                  )}
                   <h3 className="text-xl font-bold text-gray-800 mb-2">
                     {day.name}
                   </h3>
