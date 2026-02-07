@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import RoseDay from "./pages/RoseDay";
+import ProposeDay from "./pages/ProposeDay";
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -41,6 +42,14 @@ const AppContent: React.FC = () => {
         element={
           <ProtectedRoute>
             <RoseDay />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/propose-day"
+        element={
+          <ProtectedRoute>
+            <ProposeDay />
           </ProtectedRoute>
         }
       />
