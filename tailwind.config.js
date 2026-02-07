@@ -2,7 +2,12 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['"Crafty Girls"', "cursive", "system-ui", "sans-serif"],
+        crafty: ['"Crafty Girls"', "cursive"],
+      },
+    },
   },
   plugins: [],
 };

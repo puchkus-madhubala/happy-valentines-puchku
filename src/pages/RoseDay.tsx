@@ -1,52 +1,62 @@
-import React, { useState, useRef, useEffect } from "react";
-import { motion } from "motion/react";
+import React, { useState, useEffect } from "react";
+import { motion, useAnimation } from "motion/react";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import confetti from "canvas-confetti";
 import Rose from "../components/Rose";
 import { valentinesData } from "../data/valentinesData";
+import madhubalaImage from "../assets/madhubala-punching-bag.png";
 
 interface RoseItem {
   id: number;
   x: number;
   y: number;
-  rotation: number;
 }
 
 const RoseDay: React.FC = () => {
   const [roses, setRoses] = useState<RoseItem[]>([]);
-  const gardenRef = useRef<HTMLDivElement>(null);
+  const [punchCount, setPunchCount] = useState(0);
+  const bagControls = useAnimation();
   const navigate = useNavigate();
   const roseData = valentinesData.find((day) => day.name === "Rose Day");
 
+  // Watch for punch count changes and spawn roses at every 5th punch
   useEffect(() => {
-    // Trigger confetti on every 5 roses
-    if (roses.length > 0 && roses.length % 5 === 0) {
+    if (punchCount > 0 && punchCount % 5 === 0) {
+      const x = Math.random() * (window.innerWidth - 100) + 50;
+      const y = Math.random() * (window.innerHeight - 200) + 100;
+
+      const newRose: RoseItem = {
+        id: Date.now() + Math.random(),
+        x,
+        y,
+      };
+
+      setRoses((prev) => [...prev, newRose]);
+
+      // Trigger confetti at the bag position
       confetti({
         particleCount: 50,
         spread: 60,
-        origin: { y: 0.6 },
+        origin: { x: 0.5, y: 0.5 },
         colors: ["#ff4d6d", "#fff0f3", "#c9184a"],
       });
     }
-  }, [roses.length]);
+  }, [punchCount]);
 
-  const handleGardenClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!gardenRef.current) return;
+  const handlePunch = async () => {
+    // Increment punch count
+    setPunchCount((prev) => prev + 1);
 
-    const rect = gardenRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const rotation = Math.random() * 30 - 15; // Random rotation between -15 and 15 degrees
-
-    const newRose: RoseItem = {
-      id: Date.now() + Math.random(),
-      x,
-      y,
-      rotation,
-    };
-
-    setRoses((prev) => [...prev, newRose]);
+    // Trigger swing animation (non-blocking)
+    bagControls.start({
+      rotate: [0, -20, 15, -10, 5, 0],
+      scale: [1, 0.95, 1],
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+      },
+    });
   };
 
   return (
@@ -108,60 +118,94 @@ const RoseDay: React.FC = () => {
         Back
       </motion.button>
 
-      {/* Rose counter */}
-      <motion.div
-        className="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 15 }}
-      >
-        <p className="text-lg font-semibold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500">
-          Roses grown for you: {roses.length} 🌹
-        </p>
-      </motion.div>
+      {/* Main content area */}
+      <div className="relative min-h-screen flex flex-col items-center justify-center gap-8 py-12">
+        {/* Render roses behind everything */}
+        <div className="absolute inset-0 pointer-events-none z-10">
+          {roses.map((rose) => (
+            <Rose key={rose.id} x={rose.x} y={rose.y} />
+          ))}
+        </div>
 
-      {/* Garden Canvas */}
-      <div
-        ref={gardenRef}
-        onClick={handleGardenClick}
-        className="relative min-h-screen cursor-pointer"
-      >
-        {/* Empty state */}
-        {roses.length === 0 && (
+        {/* Love Note Card - Now at top */}
+        <motion.div
+          className="relative z-30 max-w-xl w-full px-4"
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            delay: 0.2,
+            type: "spring",
+            stiffness: 300,
+            damping: 15,
+          }}
+        >
+          <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-6 border-t-4 border-[#ff4d6d]">
+            <h3 className="text-2xl font-bold text-gray-800 mb-3 text-center">
+              {roseData?.title}
+            </h3>
+            <p className="text-gray-600 text-center leading-relaxed">
+              {roseData?.message}
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Punching bag container */}
+        <div className="relative z-20 flex flex-col items-center">
+          {/* String/vine from top */}
+          <div
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-1 bg-gradient-to-b from-green-600 to-green-800 h-32 rounded-full shadow-md"
+            style={{ transformOrigin: "top center" }}
+          />
+
+          {/* Punching bag */}
           <motion.div
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            animate={bagControls}
+            style={{ transformOrigin: "top center" }}
+            className="cursor-pointer select-none mt-32"
+            onClick={handlePunch}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <p className="text-2xl text-gray-400 font-light text-center px-4">
-              Tap to plant a rose for everytime i've upset you😝😝
+            <img
+              src={madhubalaImage}
+              alt="Madhubala Punching Bag"
+              className="w-64 h-auto max-h-[50vh] object-contain drop-shadow-2xl"
+            />
+          </motion.div>
+
+          {/* Punch counter */}
+          <motion.div
+            className="mt-6 px-6 py-3 bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              delay: 0.3,
+              type: "spring",
+              stiffness: 300,
+              damping: 15,
+            }}
+          >
+            <p className="text-lg font-semibold text-gray-700">
+              👊 Punches: {punchCount} | Roses: {roses.length} 🌹
             </p>
           </motion.div>
-        )}
-
-        {/* Render roses */}
-        {roses.map((rose) => (
-          <Rose key={rose.id} x={rose.x} y={rose.y} rotation={rose.rotation} />
-        ))}
-      </div>
-
-      {/* Love Note Card */}
-      <motion.div
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 max-w-md w-full mx-4"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, type: "spring", stiffness: 300, damping: 15 }}
-      >
-        <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-6 border-t-4 border-[#ff4d6d]">
-          <h3 className="text-2xl font-bold text-gray-800 mb-3 text-center font-['Quicksand']">
-            {roseData?.title}
-          </h3>
-          <p className="text-gray-600 text-center leading-relaxed font-['Nunito']">
-            {roseData?.message}
-          </p>
         </div>
-      </motion.div>
+
+        {/* Instruction text - Now at bottom */}
+        <motion.div
+          className="relative z-30 px-6 py-3 bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg text-center max-w-md"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 15 }}
+        >
+          <p className="text-lg font-semibold">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500">
+              Punch the bag for everytime i've upset you
+            </span>
+            <span className="ml-1">😝</span>
+          </p>
+        </motion.div>
+      </div>
     </div>
   );
 };

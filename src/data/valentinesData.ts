@@ -11,9 +11,9 @@ export const valentinesData: ValentineDay[] = [
       secondary: "#fff0f3", // Soft petal pink
       accent: "#c9184a",
     },
-    title: "A Rose for My Favorite Person",
+    title: "Happy Rose Day Maru Gendii🥰😚",
     message:
-      "Starting this week with a digital garden just for you. Every rose here represents a reason why I love talking to you.",
+      "Build yourself a garden full of roses by punching me. Take it out GANG. I LOVEEE YOUUU DHEBLI. I hope you forgive me soon. I MISS YOU😔 And by the time you are done building your garden here. I'll pluck some roses and send it to your doorstep😘😘",
     interactiveElement: "VIRTUAL_GARDEN", // Kiro can use this to render a specific component
   },
   {
