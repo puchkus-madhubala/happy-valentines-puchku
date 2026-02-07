@@ -101,7 +101,7 @@ const Login: React.FC = () => {
             type="submit"
             className="w-full bg-gradient-to-r from-pink-500 to-red-500 text-white py-3 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-shadow"
           >
-            Unlock the Magic ✨
+            Click here to login, My Love👀
           </motion.button>
         </form>
       </motion.div>

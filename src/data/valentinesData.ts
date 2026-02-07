@@ -5,7 +5,7 @@ export const valentinesData: ValentineDay[] = [
     id: 1,
     name: "Rose Day",
     date: "2026-02-07",
-    icon: "/src/assets/puckhus-rose.png",
+    icon: "/assets/puckhus-rose.png",
     theme: {
       primary: "#ff4d6d", // Deep rose pink
       secondary: "#fff0f3", // Soft petal pink
