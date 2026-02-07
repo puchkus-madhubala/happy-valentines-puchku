@@ -1,11 +1,12 @@
 import { ValentineDay, AuthConfig } from "../types";
+import roseIcon from "../assets/puckhus-rose.png";
 
 export const valentinesData: ValentineDay[] = [
   {
     id: 1,
     name: "Rose Day",
     date: "2026-02-07",
-    icon: "/assets/puckhus-rose.png",
+    icon: roseIcon,
     theme: {
       primary: "#ff4d6d", // Deep rose pink
       secondary: "#fff0f3", // Soft petal pink
