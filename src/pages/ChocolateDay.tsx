@@ -35,11 +35,29 @@ const ChocolateDay = () => {
     null,
   );
   const [floatingScores, setFloatingScores] = useState<FloatingScore[]>([]);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [introStep, setIntroStep] = useState(0);
   const gameAreaRef = useRef<HTMLDivElement>(null);
+
+  // Intro sequence
+  useEffect(() => {
+    if (gameStarted) return;
+
+    const timers = [
+      setTimeout(() => setIntroStep(1), 1500),
+      setTimeout(() => setIntroStep(2), 3500),
+      setTimeout(() => setIntroStep(3), 4500),
+      setTimeout(() => setIntroStep(4), 5500),
+      setTimeout(() => setIntroStep(5), 6500),
+      setTimeout(() => setGameStarted(true), 8500),
+    ];
+
+    return () => timers.forEach((timer) => clearTimeout(timer));
+  }, [gameStarted]);
 
   // Spawn items every 800ms
   useEffect(() => {
-    if (showCertificate) return;
+    if (showCertificate || !gameStarted) return;
 
     const interval = setInterval(() => {
       const rand = Math.random();
@@ -67,7 +85,7 @@ const ChocolateDay = () => {
     }, 800);
 
     return () => clearInterval(interval);
-  }, [showCertificate]);
+  }, [showCertificate, gameStarted]);
 
   // Clean up items that fall off screen
   useEffect(() => {
@@ -85,7 +103,6 @@ const ChocolateDay = () => {
     const clickX = rect.left + rect.width / 2;
     const clickY = rect.top + rect.height / 2;
 
-    // Remove the item
     setItems((prev) => prev.filter((i) => i.id !== item.id));
 
     let scoreText = "";
@@ -96,31 +113,26 @@ const ChocolateDay = () => {
       item.type === "chocolate2" ||
       item.type === "chocolate3"
     ) {
-      // Chocolates: +12 points
       scoreText = "+12";
       scoreColor = "#10b981";
       setScore((prev) => prev + 12);
     } else if (item.type === "milkPowder") {
-      // Milk powder: always +120 points
       scoreText = "+120";
       scoreColor = "#fbbf24";
       setScore((prev) => prev + 120);
       setHeartBurst({ x: clickX, y: clickY });
       setTimeout(() => setHeartBurst(null), 1000);
     } else {
-      // Madhav face logic
       const newMadhavClicks = madhavClicks + 1;
       setMadhavClicks(newMadhavClicks);
 
       if (newMadhavClicks <= 3) {
-        // Clicks 1-3: -12 points and shake animation
         scoreText = "-12";
         scoreColor = "#ef4444";
         setScore((prev) => Math.max(0, prev - 12));
         setShakeScore(true);
         setTimeout(() => setShakeScore(false), 500);
       } else {
-        // Click 4+: +120 points with heart burst
         scoreText = "+120";
         scoreColor = "#ec4899";
         setScore((prev) => prev + 120);
@@ -129,7 +141,6 @@ const ChocolateDay = () => {
       }
     }
 
-    // Add floating score text
     const floatingScore: FloatingScore = {
       id: Date.now() + Math.random(),
       x: clickX,
@@ -139,7 +150,6 @@ const ChocolateDay = () => {
     };
     setFloatingScores((prev) => [...prev, floatingScore]);
 
-    // Remove floating score after animation
     setTimeout(() => {
       setFloatingScores((prev) =>
         prev.filter((s) => s.id !== floatingScore.id),
@@ -184,7 +194,6 @@ const ChocolateDay = () => {
           "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>🍫</text></svg>\") 16 0, auto",
       }}
     >
-      {/* Back Button */}
       <motion.button
         onClick={() => navigate("/")}
         className="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm text-amber-900 rounded-2xl shadow-lg hover:bg-white transition-colors"
@@ -197,7 +206,102 @@ const ChocolateDay = () => {
 
       {!showCertificate ? (
         <>
-          {/* Score Display */}
+          {!gameStarted && (
+            <motion.div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-[#4b2e2a] via-[#6b4423] to-[#7f5539]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              <div className="text-center px-4">
+                <AnimatePresence mode="wait">
+                  {introStep === 0 && (
+                    <motion.h1
+                      key="welcome"
+                      className="text-5xl md:text-7xl font-bold text-pink-400"
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      exit={{ scale: 0, rotate: 180 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 15,
+                      }}
+                    >
+                      Welcome to puckhu's chocolate world!!
+                    </motion.h1>
+                  )}
+                  {introStep === 1 && (
+                    <motion.h1
+                      key="ready"
+                      className="text-5xl md:text-7xl font-bold text-pink-400"
+                      initial={{ scale: 0, y: 50 }}
+                      animate={{ scale: 1, y: 0 }}
+                      exit={{ scale: 0, y: -50 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 15,
+                      }}
+                    >
+                      Are you readyyy??
+                    </motion.h1>
+                  )}
+                  {introStep === 2 && (
+                    <motion.h1
+                      key="1"
+                      className="text-9xl md:text-[12rem] font-black text-pink-400"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: [0, 1.2, 1] }}
+                      exit={{ scale: 0 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      1
+                    </motion.h1>
+                  )}
+                  {introStep === 3 && (
+                    <motion.h1
+                      key="2"
+                      className="text-9xl md:text-[12rem] font-black text-pink-400"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: [0, 1.2, 1] }}
+                      exit={{ scale: 0 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      2
+                    </motion.h1>
+                  )}
+                  {introStep === 4 && (
+                    <motion.h1
+                      key="3"
+                      className="text-9xl md:text-[12rem] font-black text-pink-400"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: [0, 1.2, 1] }}
+                      exit={{ scale: 0 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      3
+                    </motion.h1>
+                  )}
+                  {introStep === 5 && (
+                    <motion.h1
+                      key="click"
+                      className="text-4xl md:text-6xl font-bold text-pink-400"
+                      initial={{ scale: 0, rotate: -10 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      exit={{ scale: 0 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 15,
+                      }}
+                    >
+                      Click on your favourites and earn points ;)
+                    </motion.h1>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          )}
           <motion.div
             className="fixed top-6 left-1/2 -translate-x-1/2 z-40"
             animate={
@@ -220,8 +324,6 @@ const ChocolateDay = () => {
               </motion.p>
             </div>
           </motion.div>
-
-          {/* Falling Items */}
           <AnimatePresence>
             {items.map((item) => (
               <motion.div
@@ -279,8 +381,6 @@ const ChocolateDay = () => {
               </motion.div>
             ))}
           </AnimatePresence>
-
-          {/* Floating Score Text */}
           <AnimatePresence>
             {floatingScores.map((floatingScore) => (
               <motion.div
@@ -301,8 +401,6 @@ const ChocolateDay = () => {
               </motion.div>
             ))}
           </AnimatePresence>
-
-          {/* Heart Burst Effect */}
           <AnimatePresence>
             {heartBurst && (
               <div
@@ -327,8 +425,6 @@ const ChocolateDay = () => {
               </div>
             )}
           </AnimatePresence>
-
-          {/* Finish Button */}
           <motion.button
             onClick={handleFinishGame}
             className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 bg-gradient-to-r from-pink-500 to-red-500 text-white px-12 py-5 rounded-full text-2xl font-bold shadow-2xl"
@@ -341,10 +437,9 @@ const ChocolateDay = () => {
               y: { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
             }}
           >
-            🎁 Finish & Get My Reward
+            Click here to finish the game🎁
           </motion.button>
-
-          {/* Instructions */}
+          s
           <motion.div
             className="fixed bottom-32 left-1/2 -translate-x-1/2 z-30 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-2xl shadow-lg max-w-md text-center"
             initial={{ opacity: 0, y: 20 }}
@@ -352,14 +447,11 @@ const ChocolateDay = () => {
             transition={{ delay: 0.5 }}
           >
             <p className="text-amber-900 font-medium text-sm">
-              🍫 Chocolates = +12 | 🥛 Milk Powder = +120
-              <br />
-              😈 Madhav: First 3 clicks = -12, then +120!
+              All the best maru princess!!
             </p>
           </motion.div>
         </>
       ) : (
-        /* Certificate Screen */
         <motion.div
           className="min-h-screen flex items-center justify-center p-4"
           initial={{ opacity: 0, scale: 0.8 }}
@@ -367,13 +459,11 @@ const ChocolateDay = () => {
           transition={{ type: "spring", stiffness: 200, damping: 20 }}
         >
           <div className="relative max-w-3xl w-full bg-gradient-to-br from-amber-50 to-yellow-100 rounded-3xl shadow-2xl p-12 border-8 border-yellow-600">
-            {/* Decorative corners */}
             <div className="absolute top-4 left-4 text-6xl">🏆</div>
             <div className="absolute top-4 right-4 text-6xl">🍫</div>
             <div className="absolute bottom-4 left-4 text-6xl">💝</div>
             <div className="absolute bottom-4 right-4 text-6xl">✨</div>
 
-            {/* Certificate Content */}
             <div className="text-center space-y-6">
               <motion.h1
                 className="text-6xl font-bold text-amber-900"
@@ -388,19 +478,18 @@ const ChocolateDay = () => {
                 animate={{ scale: [1, 1.1, 1] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               >
+                <p className="text-3xl font-bold text-amber-800">YOU SCORED</p>
                 {score}
               </motion.div>
 
-              <p className="text-3xl font-bold text-amber-800">YOU SCORED</p>
-
               <div className="py-6">
                 <p className="text-4xl font-bold text-pink-600 leading-relaxed">
-                  Happy Chocolate Day My Love 💕
+                  Happy Chocolate Day
+                  <br />
+                  Maru Kaju Katli😘
                 </p>
                 <p className="text-3xl font-semibold text-amber-900 mt-4 leading-relaxed">
-                  YOU ARE THE SWEETEST SWEETIE
-                  <br />
-                  OF ALL THE SWEETUS
+                  YOU ARE THE SWEETEST, I LUBBB YOUU 🫀
                 </p>
               </div>
 
