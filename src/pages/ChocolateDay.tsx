@@ -60,8 +60,8 @@ const ChocolateDay = () => {
       const newItem: FallingItem = {
         id: Date.now() + Math.random(),
         type,
-        x: Math.random() * 90 + 5, // 5% to 95% of screen width
-        speed: Math.random() * 3 + 2, // 2-5 seconds
+        x: Math.random() * 90 + 5,
+        speed: Math.random() * 3 + 2,
       };
       setItems((prev) => [...prev, newItem]);
     }, 800);
@@ -81,7 +81,7 @@ const ChocolateDay = () => {
   const handleItemClick = (item: FallingItem, event: React.MouseEvent) => {
     event.stopPropagation();
 
-    const rect = (event.target as HTMLElement).getBoundingClientRect();
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const clickX = rect.left + rect.width / 2;
     const clickY = rect.top + rect.height / 2;
 
@@ -98,14 +98,13 @@ const ChocolateDay = () => {
     ) {
       // Chocolates: +12 points
       scoreText = "+12";
-      scoreColor = "#10b981"; // green
+      scoreColor = "#10b981";
       setScore((prev) => prev + 12);
     } else if (item.type === "milkPowder") {
       // Milk powder: always +120 points
       scoreText = "+120";
-      scoreColor = "#fbbf24"; // yellow/gold
+      scoreColor = "#fbbf24";
       setScore((prev) => prev + 120);
-      // Heart burst for milk powder too
       setHeartBurst({ x: clickX, y: clickY });
       setTimeout(() => setHeartBurst(null), 1000);
     } else {
@@ -116,14 +115,14 @@ const ChocolateDay = () => {
       if (newMadhavClicks <= 3) {
         // Clicks 1-3: -12 points and shake animation
         scoreText = "-12";
-        scoreColor = "#ef4444"; // red
+        scoreColor = "#ef4444";
         setScore((prev) => Math.max(0, prev - 12));
         setShakeScore(true);
         setTimeout(() => setShakeScore(false), 500);
       } else {
         // Click 4+: +120 points with heart burst
         scoreText = "+120";
-        scoreColor = "#ec4899"; // pink
+        scoreColor = "#ec4899";
         setScore((prev) => prev + 120);
         setHeartBurst({ x: clickX, y: clickY });
         setTimeout(() => setHeartBurst(null), 1000);
@@ -150,7 +149,6 @@ const ChocolateDay = () => {
 
   const handleFinishGame = () => {
     setShowCertificate(true);
-    // Trigger confetti celebration
     const duration = 3000;
     const end = Date.now() + duration;
 
@@ -181,6 +179,10 @@ const ChocolateDay = () => {
     <div
       ref={gameAreaRef}
       className="min-h-screen bg-gradient-to-br from-[#4b2e2a] via-[#6b4423] to-[#7f5539] relative overflow-hidden"
+      style={{
+        cursor:
+          "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>🍫</text></svg>\") 16 0, auto",
+      }}
     >
       {/* Back Button */}
       <motion.button
@@ -243,35 +245,35 @@ const ChocolateDay = () => {
                   <img
                     src={chocolate1}
                     alt="Chocolate 1"
-                    className="w-20 h-20 object-contain drop-shadow-2xl"
+                    className="w-28 h-28 object-contain drop-shadow-2xl pointer-events-none"
                   />
                 )}
                 {item.type === "chocolate2" && (
                   <img
                     src={chocolate2}
                     alt="Chocolate 2"
-                    className="w-20 h-20 object-contain drop-shadow-2xl"
+                    className="w-28 h-28 object-contain drop-shadow-2xl pointer-events-none"
                   />
                 )}
                 {item.type === "chocolate3" && (
                   <img
                     src={chocolate3}
                     alt="Chocolate 3"
-                    className="w-20 h-20 object-contain drop-shadow-2xl"
+                    className="w-28 h-28 object-contain drop-shadow-2xl pointer-events-none"
                   />
                 )}
                 {item.type === "milkPowder" && (
                   <img
                     src={milkPowder}
                     alt="Milk Powder"
-                    className="w-20 h-20 object-contain drop-shadow-2xl"
+                    className="w-28 h-28 object-contain drop-shadow-2xl pointer-events-none"
                   />
                 )}
                 {item.type === "madhav" && (
                   <img
                     src={madhavImage}
                     alt="Madhav"
-                    className="w-20 h-20 object-contain drop-shadow-2xl rounded-full"
+                    className="w-28 h-28 object-contain drop-shadow-2xl rounded-full pointer-events-none"
                   />
                 )}
               </motion.div>
