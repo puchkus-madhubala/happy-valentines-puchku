@@ -302,8 +302,9 @@ const ChocolateDay = () => {
               </div>
             </motion.div>
           )}
+
           <motion.div
-            className="fixed top-6 left-1/2 -translate-x-1/2 z-40"
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-40 flex justify-center"
             animate={
               shakeScore
                 ? {
@@ -314,7 +315,7 @@ const ChocolateDay = () => {
             }
             transition={{ duration: 0.5 }}
           >
-            <div className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-8 py-4 rounded-3xl shadow-2xl">
+            <div className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-8 py-4 rounded-3xl shadow-2xl flex items-center justify-center">
               <motion.p
                 className="text-5xl font-bold text-center"
                 animate={{ scale: [1, 1.1, 1] }}
@@ -425,9 +426,10 @@ const ChocolateDay = () => {
               </div>
             )}
           </AnimatePresence>
+
           <motion.button
             onClick={handleFinishGame}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 bg-gradient-to-r from-pink-500 to-red-500 text-white px-12 py-5 rounded-full text-2xl font-bold shadow-2xl"
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 bg-gradient-to-r from-pink-500 to-red-500 text-white px-12 py-5 rounded-full text-2xl font-bold shadow-2xl flex items-center justify-center"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             animate={{
@@ -439,14 +441,14 @@ const ChocolateDay = () => {
           >
             Click here to finish the game🎁
           </motion.button>
-          s
+
           <motion.div
-            className="fixed bottom-32 left-1/2 -translate-x-1/2 z-30 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-2xl shadow-lg max-w-md text-center"
+            className="fixed bottom-32 left-1/2 -translate-x-1/2 z-30 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-2xl shadow-lg max-w-md flex items-center justify-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <p className="text-amber-900 font-medium text-sm">
+            <p className="text-amber-900 font-medium text-sm text-center">
               All the best maru princess!!
             </p>
           </motion.div>
