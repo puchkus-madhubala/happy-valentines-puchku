@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import RoseDay from "./pages/RoseDay";
 import ProposeDay from "./pages/ProposeDay";
+import ChocolateDay from "./pages/ChocolateDay";
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -50,6 +51,14 @@ const AppContent: React.FC = () => {
         element={
           <ProtectedRoute>
             <ProposeDay />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/chocolate-day"
+        element={
+          <ProtectedRoute>
+            <ChocolateDay />
           </ProtectedRoute>
         }
       />

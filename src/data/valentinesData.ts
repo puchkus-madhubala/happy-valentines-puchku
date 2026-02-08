@@ -35,7 +35,7 @@ export const valentinesData: ValentineDay[] = [
   {
     id: 3,
     name: "Chocolate Day",
-    date: "2026-02-09",
+    date: "2026-02-08",
     icon: "🍫",
     theme: {
       primary: "#7f5539",

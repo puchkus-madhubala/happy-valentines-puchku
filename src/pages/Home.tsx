@@ -32,6 +32,8 @@ const Home: React.FC = () => {
       navigate("/rose-day");
     } else if (day.name === "Propose Day") {
       navigate("/propose-day");
+    } else if (day.name === "Chocolate Day") {
+      navigate("/chocolate-day");
     }
   };
 
